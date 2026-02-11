@@ -402,7 +402,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Handle difficulty filter
       // When "All Levels" is selected (empty string), we fetch all activities
-      // and filter on the client side to show only activities without a difficulty field.
+      // and filter on the client side (see displayFilteredActivities) to show only 
+      // activities without a difficulty field. This approach keeps the API simple
+      // while supporting the requirement that "All Levels" means "no difficulty specified".
       // For specific difficulty levels, we add the difficulty parameter to the API request.
       if (currentDifficulty !== "") {
         queryParams.push(`difficulty=${encodeURIComponent(currentDifficulty)}`);
@@ -453,8 +455,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
 
-      // Apply difficulty filter on client side when "All Levels" is selected
-      // Only show activities without a difficulty field
+      // Apply difficulty filter on client side when "All Levels" is selected.
+      // This complements the server-side filtering (see fetchActivities).
+      // When "All Levels" is active (empty string), we only show activities 
+      // without a difficulty field, as these are suitable for all student levels.
       if (currentDifficulty === "" && details.difficulty) {
         return;
       }
