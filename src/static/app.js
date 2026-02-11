@@ -400,13 +400,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
 
-      // Handle difficulty filter - when "All Levels" is selected (empty string), 
-      // only show activities without a difficulty field
-      if (currentDifficulty === "") {
-        // Special handling: fetch all activities and filter on client side
-        // to show only those without difficulty field
-      } else {
-        // Add difficulty parameter for specific difficulty levels
+      // Handle difficulty filter
+      // When "All Levels" is selected (empty string), we fetch all activities
+      // and filter on the client side to show only activities without a difficulty field.
+      // For specific difficulty levels, we add the difficulty parameter to the API request.
+      if (currentDifficulty !== "") {
         queryParams.push(`difficulty=${encodeURIComponent(currentDifficulty)}`);
       }
 
