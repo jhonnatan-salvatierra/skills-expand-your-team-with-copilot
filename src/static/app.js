@@ -621,9 +621,9 @@ document.addEventListener("DOMContentLoaded", () => {
         if (button.classList.contains("share-twitter")) {
           shareOnTwitter(activityName, description);
         } else if (button.classList.contains("share-facebook")) {
-          shareOnFacebook(activityName, description);
+          shareOnFacebook();
         } else if (button.classList.contains("share-linkedin")) {
-          shareOnLinkedIn(activityName, description);
+          shareOnLinkedIn();
         } else if (button.classList.contains("share-email")) {
           shareViaEmail(activityName, description, schedule);
         }
@@ -912,15 +912,14 @@ document.addEventListener("DOMContentLoaded", () => {
     window.open(twitterUrl, '_blank', 'width=550,height=420');
   }
 
-  function shareOnFacebook(activityName, description) {
+  function shareOnFacebook() {
     const url = window.location.href;
     const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
     window.open(facebookUrl, '_blank', 'width=550,height=420');
   }
 
-  function shareOnLinkedIn(activityName, description) {
+  function shareOnLinkedIn() {
     const url = window.location.href;
-    const title = `${activityName} - Mergington High School`;
     const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
     window.open(linkedInUrl, '_blank', 'width=550,height=420');
   }
