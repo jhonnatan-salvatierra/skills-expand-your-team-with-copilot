@@ -40,6 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const categoryFilters = document.querySelectorAll(".category-filter");
   const dayFilters = document.querySelectorAll(".day-filter");
   const timeFilters = document.querySelectorAll(".time-filter");
+  const difficultyFilters = document.querySelectorAll(".difficulty-filter");
 
   // Authentication elements
   const loginButton = document.getElementById("login-button");
@@ -66,6 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let searchQuery = "";
   let currentDay = "";
   let currentTimeRange = "";
+  let currentDifficulty = "";
 
   // Authentication state
   let currentUser = null;
@@ -89,6 +91,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const activeTimeFilter = document.querySelector(".time-filter.active");
     if (activeTimeFilter) {
       currentTimeRange = activeTimeFilter.dataset.time;
+    }
+
+    // Initialize difficulty filter
+    const activeDifficultyFilter = document.querySelector(".difficulty-filter.active");
+    if (activeDifficultyFilter) {
+      currentDifficulty = activeDifficultyFilter.dataset.difficulty;
     }
   }
 
@@ -418,6 +426,16 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
 
+      // Handle difficulty filter
+      // When "All Levels" is selected (empty string), we fetch all activities
+      // and filter on the client side (see displayFilteredActivities) to show only 
+      // activities without a difficulty field. This approach keeps the API simple
+      // while supporting the requirement that "All Levels" means "no difficulty specified".
+      // For specific difficulty levels, we add the difficulty parameter to the API request.
+      if (currentDifficulty !== "") {
+        queryParams.push(`difficulty=${encodeURIComponent(currentDifficulty)}`);
+      }
+
       const queryString =
         queryParams.length > 0 ? `?${queryParams.join("&")}` : "";
       const response = await fetch(`/activities${queryString}`);
@@ -461,6 +479,14 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!isWeekendActivity) {
           return;
         }
+      }
+
+      // Apply difficulty filter on client side when "All Levels" is selected.
+      // This complements the server-side filtering (see fetchActivities).
+      // When "All Levels" is active (empty string), we only show activities 
+      // without a difficulty field, as these are suitable for all student levels.
+      if (currentDifficulty === "" && details.difficulty) {
+        return;
       }
 
       // Apply search filter
@@ -663,6 +689,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Update current time filter and fetch activities
       currentTimeRange = button.dataset.time;
+      fetchActivities();
+    });
+  });
+
+  // Add event listeners for difficulty filter buttons
+  difficultyFilters.forEach((button) => {
+    button.addEventListener("click", () => {
+      // Update active class
+      difficultyFilters.forEach((btn) => btn.classList.remove("active"));
+      button.classList.add("active");
+
+      // Update current difficulty filter and fetch activities
+      currentDifficulty = button.dataset.difficulty;
       fetchActivities();
     });
   });
